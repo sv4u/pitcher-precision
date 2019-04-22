@@ -30,7 +30,7 @@ rm(list = ls())
 
 With these libraries, we can get out data as well as visaulize it. Let's take a look at some players to see what we can look at.
 
-# Discovery
+# Data Loading
 
 Here are the list of players I will be looking at.
 
@@ -107,3 +107,49 @@ With this filtered data, we have selected the following columns:
 * Spin rate of pitch
 * Exit velocity of pitch
 * Launch angle of pitch
+
+# Visualization {.tabset .tabset-fade}
+
+Let's start visualizing some of this data.
+
+## Pitch Location
+
+First, let's look at pitch location.
+
+```{r pitch_heatmap}
+graph.pitch.heatmap = function(player.data) {
+    graph = ggplot(player.data) +
+        geom_jitter(aes(x = player.data$xcoord,
+                        y = player.data$ycoord,
+                        color = player.data$velo))+
+        xlab("Horizontal Position") +
+        ylab("Vertical Position") +
+        ggtitle(paste(player.data$name[1], "Heatmap", sep = " ")) +
+        labs(color = "Velocity") +
+        scale_color_gradient(low = "blue", high = "red") +
+        theme_minimal()
+    graph
+}
+
+corbin.heatmap = graph.pitch.heatmap(corbin)
+corbin.heatmap
+
+stroman.heatmap = graph.pitch.heatmap(stroman)
+stroman.heatmap
+
+syndergaard.heatmap = graph.pitch.heatmap(syndergaard)
+syndergaard.heatmap
+
+treinen.heatmap = graph.pitch.heatmap(treinen)
+treinen.heatmap
+
+vazquez.heatmap = graph.pitch.heatmap(vazquez)
+vazquez.heatmap
+
+verlander.heatmap = graph.pitch.heatmap(verlander)
+verlander.heatmap
+```
+
+## Pitch Movement
+
+## Pitch Velocity
