@@ -313,7 +313,88 @@ $(document).ready(function () {
 </div>
 
 
-<p>yeet</p>
+<p>Last Update: 2019-04-22 10:55:01</p>
+<div id="section-libraries" class="section level1">
+<h1>Libraries</h1>
+<p>Let’s load some libraries in first.</p>
+<pre class="r"><code>library(baseballr)
+library(pitchRx)
+library(tidyverse)</code></pre>
+<p>Let’s also clean out environment.</p>
+<pre class="r"><code>rm(list = ls())</code></pre>
+<p>With these libraries, we can get out data as well as visaulize it. Let’s take a look at some players to see what we can look at.</p>
+</div>
+<div id="section-discovery" class="section level1">
+<h1>Discovery</h1>
+<p>Here are the list of players I will be looking at.</p>
+<ul>
+<li>Noah Syndergaard - Player ID: 592789</li>
+<li>Patrick Corbin - Player ID: 571578</li>
+<li>Felipe Vazquez - Player ID: 553878</li>
+<li>Marcus Stroman - Player ID: 573186</li>
+<li>Justin Verlander - Player ID: 434378</li>
+<li>Blake Treinen - Player ID: 595014</li>
+</ul>
+<p>Let’s now scrape the data for each player.</p>
+<pre class="r"><code>scrape.data = function(start, id) {
+    data = scrape_statcast_savant(start_date = start,
+                                  end_date = &quot;2019-04-22&quot;,
+                                  playerid = id,
+                                  player_type = &#39;pitcher&#39;)
+    data
+}
+
+start = &quot;2019-01-01&quot;
+
+syndergaard.data = scrape.data(start, 592789)
+corbin.data = scrape.data(start, 571578)
+vazquez.data = scrape.data(start, 553878)
+stroman.data = scrape.data(start, 573186)
+verlander.data = scrape.data(start, 434378)
+treinen.data = scrape.data(start, 595014)</code></pre>
+<p>Now with our data, let’s get the information we want out of it.</p>
+<pre class="r"><code>filter.data = function(data) {
+    filtered = data.frame(name = data %&gt;% pull(player_name),
+                          pitch = data %&gt;% pull(pitch_type),
+                          outcome = data %&gt;% pull(type),
+                          date = data %&gt;% pull(game_date),
+                          event = data %&gt;% pull(events),
+                          descrip = data %&gt;% pull(description),
+                          xcoord = data %&gt;% pull(plate_x),
+                          ycoord = data %&gt;% pull(plate_z),
+                          xmove = data %&gt;% pull(pfx_x),
+                          ymove = data %&gt;% pull(pfx_z),
+                          velo = data %&gt;% pull(effective_speed),
+                          spin = data %&gt;% pull(release_spin_rate),
+                          exvelo = data %&gt;% pull(launch_speed),
+                          exang = data %&gt;% pull(launch_angle))
+    filtered
+}
+
+syndergaard = filter.data(syndergaard.data)
+corbin = filter.data(corbin.data)
+stroman = filter.data(stroman.data)
+treinen = filter.data(treinen.data)
+vazquez = filter.data(vazquez.data)
+verlander = filter.data(verlander.data)</code></pre>
+<p>With this filtered data, we have selected the following columns:</p>
+<ul>
+<li>Name</li>
+<li>Pitch type</li>
+<li>Pitch outcome (Strike, Ball, In play)</li>
+<li>Game Date</li>
+<li>Event</li>
+<li>Description of event</li>
+<li>X coordinate (horizontal location) of pitch</li>
+<li>Y coordinate (vertical location) of pitch</li>
+<li>Horizontal movement (X coordinate movement) of pitch</li>
+<li>Vertical movement (Y coordinate movement) of pitch</li>
+<li>Velocity of pitch</li>
+<li>Spin rate of pitch</li>
+<li>Exit velocity of pitch</li>
+<li>Launch angle of pitch</li>
+</ul>
+</div>
 
 
 

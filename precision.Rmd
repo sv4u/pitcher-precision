@@ -10,4 +10,100 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-yeet
+Last Update: `r Sys.time()`
+
+# Libraries
+
+Let's load some libraries in first.
+
+```{r libs}
+library(baseballr)
+library(pitchRx)
+library(tidyverse)
+```
+
+Let's also clean out environment.
+
+```{r clean}
+rm(list = ls())
+```
+
+With these libraries, we can get out data as well as visaulize it. Let's take a look at some players to see what we can look at.
+
+# Discovery
+
+Here are the list of players I will be looking at.
+
+* Noah Syndergaard - Player ID: 592789
+* Patrick Corbin - Player ID: 571578
+* Felipe Vazquez - Player ID: 553878
+* Marcus Stroman - Player ID: 573186
+* Justin Verlander - Player ID: 434378
+* Blake Treinen - Player ID: 595014
+
+Let's now scrape the data for each player.
+
+```{r disco_data}
+scrape.data = function(start, id) {
+    data = scrape_statcast_savant(start_date = start,
+                                  end_date = "2019-04-22",
+                                  playerid = id,
+                                  player_type = 'pitcher')
+    data
+}
+
+start = "2019-01-01"
+
+syndergaard.data = scrape.data(start, 592789)
+corbin.data = scrape.data(start, 571578)
+vazquez.data = scrape.data(start, 553878)
+stroman.data = scrape.data(start, 573186)
+verlander.data = scrape.data(start, 434378)
+treinen.data = scrape.data(start, 595014)
+```
+
+Now with our data, let's get the information we want out of it.
+
+```{r filter}
+filter.data = function(data) {
+    filtered = data.frame(name = data %>% pull(player_name),
+                          pitch = data %>% pull(pitch_type),
+                          outcome = data %>% pull(type),
+                          date = data %>% pull(game_date),
+                          event = data %>% pull(events),
+                          descrip = data %>% pull(description),
+                          xcoord = data %>% pull(plate_x),
+                          ycoord = data %>% pull(plate_z),
+                          xmove = data %>% pull(pfx_x),
+                          ymove = data %>% pull(pfx_z),
+                          velo = data %>% pull(effective_speed),
+                          spin = data %>% pull(release_spin_rate),
+                          exvelo = data %>% pull(launch_speed),
+                          exang = data %>% pull(launch_angle))
+    filtered
+}
+
+syndergaard = filter.data(syndergaard.data)
+corbin = filter.data(corbin.data)
+stroman = filter.data(stroman.data)
+treinen = filter.data(treinen.data)
+vazquez = filter.data(vazquez.data)
+verlander = filter.data(verlander.data)
+```
+
+With this filtered data, we have selected the following columns:
+
+* Name
+* Pitch type
+* Pitch outcome (Strike, Ball, In play)
+* Game Date
+* Event
+* Description of event
+* X coordinate (horizontal location) of pitch
+* Y coordinate (vertical location) of pitch
+* Horizontal movement (X coordinate movement) of pitch
+* Vertical movement (Y coordinate movement) of pitch
+* Velocity of pitch
+* Spin rate of pitch
+* Exit velocity of pitch
+* Launch angle of pitch
