@@ -110,46 +110,127 @@ With this filtered data, we have selected the following columns:
 
 # Visualization {.tabset .tabset-fade}
 
-Let's start visualizing some of this data.
+Let's start visualizing some of this data. Before that, let me define a strikezone. This strikezone was taken from the website [Baseball with R](https://baseballwithr.wordpress.com/2013/12/12/plotting-pitches-ggplot2-tips-and-tricks/)
 
-## Pitch Location
+```{r strikezone}
+topKzone = 3.5
+botKzone = 1.6
+inKzone = -.95
+outKzone = 0.95
+kZone = data.frame(x = c(inKzone, inKzone, outKzone, outKzone, inKzone),
+                   y = c(botKzone, topKzone, topKzone, botKzone, botKzone))
+```
 
-First, let's look at pitch location.
+## Pitch Location via Pitch Type
 
-```{r pitch_heatmap}
-graph.pitch.heatmap = function(player.data) {
+Let's look at pitch location via pitch type.
+
+```{r pitch_heatmap_type}
+graph.pitch.heatmap.type = function(player.data) {
     graph = ggplot(player.data) +
         geom_jitter(aes(x = player.data$xcoord,
                         y = player.data$ycoord,
-                        color = player.data$velo))+
+                        color = player.data$pitch)) +
+        xlab("Horizontal Position") +
+        ylab("Vertical Position") +
+        ggtitle(paste(player.data$name[1], "Heatmap", sep = " ")) +
+        labs(color = "Pitch Type") +
+        theme_minimal() + geom_path(aes(x, y), data = kZone)
+    graph
+}
+
+corbin.heatmap.type = graph.pitch.heatmap.type(corbin)
+corbin.heatmap.type
+
+stroman.heatmap.type = graph.pitch.heatmap.type(stroman)
+stroman.heatmap.type
+
+syndergaard.heatmap.type = graph.pitch.heatmap.type(syndergaard)
+syndergaard.heatmap.type
+
+treinen.heatmap.type = graph.pitch.heatmap.type(treinen)
+treinen.heatmap.type
+
+vazquez.heatmap.type = graph.pitch.heatmap.type(vazquez)
+vazquez.heatmap.type
+
+verlander.heatmap.type = graph.pitch.heatmap.type(verlander)
+verlander.heatmap.type
+```
+
+## Pitch Location via Velocity
+
+Let's look at pitch location via velocity.
+
+```{r pitch_heatmap_velo}
+graph.pitch.heatmap.velo = function(player.data) {
+    graph = ggplot(player.data) +
+        geom_jitter(aes(x = player.data$xcoord,
+                        y = player.data$ycoord,
+                        color = player.data$velo)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
         ggtitle(paste(player.data$name[1], "Heatmap", sep = " ")) +
         labs(color = "Velocity") +
         scale_color_gradient(low = "blue", high = "red") +
-        theme_minimal()
+        theme_minimal() + geom_path(aes(x, y), data = kZone)
     graph
 }
 
-corbin.heatmap = graph.pitch.heatmap(corbin)
-corbin.heatmap
+corbin.heatmap.velo = graph.pitch.heatmap.velo(corbin)
+corbin.heatmap.velo
 
-stroman.heatmap = graph.pitch.heatmap(stroman)
-stroman.heatmap
+stroman.heatmap.velo = graph.pitch.heatmap.velo(stroman)
+stroman.heatmap.velo
 
-syndergaard.heatmap = graph.pitch.heatmap(syndergaard)
-syndergaard.heatmap
+syndergaard.heatmap.velo = graph.pitch.heatmap.velo(syndergaard)
+syndergaard.heatmap.velo
 
-treinen.heatmap = graph.pitch.heatmap(treinen)
-treinen.heatmap
+treinen.heatmap.velo = graph.pitch.heatmap.velo(treinen)
+treinen.heatmap.velo
 
-vazquez.heatmap = graph.pitch.heatmap(vazquez)
-vazquez.heatmap
+vazquez.heatmap.velo = graph.pitch.heatmap.velo(vazquez)
+vazquez.heatmap.velo
 
-verlander.heatmap = graph.pitch.heatmap(verlander)
-verlander.heatmap
+verlander.heatmap.velo = graph.pitch.heatmap.velo(verlander)
+verlander.heatmap.velo
 ```
 
 ## Pitch Movement
 
 ## Pitch Velocity
+
+We need to separate each pitch first by type. Then we can see how the pitch's velocity changed over time.
+
+```{r pitch_velo}
+graph.pitch.velo = function(player) {
+    # player = player[complete.cases(player),]
+    graph = ggplot(player) +
+        geom_line(aes(x = 1:length(player$velo),
+                      y = player$velo,
+                      color = player$pitch)) +
+        xlab("Pitches Thrown") + ylab("Velocity") + labs(color = "Pitch Type") +
+        ggtitle(paste(player$name[1], "Pitch Velocity Chart", sep = " ")) +
+        theme_minimal()
+}
+
+corbin.velo = graph.pitch.velo(corbin)
+corbin.velo
+
+stroman.velo = graph.pitch.velo(stroman)
+stroman.velo
+
+syndergaard.velo = graph.pitch.velo(syndergaard)
+syndergaard.velo
+
+treinen.velo = graph.pitch.velo(treinen)
+treinen.velo
+
+vazquez.velo = graph.pitch.velo(vazquez)
+vazquez.velo
+
+verlander.velo = graph.pitch.velo(verlander)
+verlander.velo
+```
+
+## Pitch Spin Rate
