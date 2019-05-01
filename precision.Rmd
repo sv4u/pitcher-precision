@@ -6,13 +6,15 @@ runtime: shiny
 output: html_document
 ---
 
+# {.tabset .tabset-fade}
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Last Update: `r Sys.time()`
 
-# Libraries
+## Libraries
 
 Let's load some libraries in first.
 
@@ -30,7 +32,7 @@ rm(list = ls())
 
 With these libraries, we can get out data as well as visaulize it. Let's take a look at some players to see what we can look at.
 
-# Data Loading
+## Data Loading
 
 Here are the list of players I will be looking at.
 
@@ -108,7 +110,7 @@ With this filtered data, we have selected the following columns:
 * Exit velocity of pitch
 * Launch angle of pitch
 
-# Visualization {.tabset .tabset-fade}
+## Visualization {.tabset .tabset-fade}
 
 Let's start visualizing some of this data. Before that, let me define a strikezone. This strikezone was taken from the website [Baseball with R](https://baseballwithr.wordpress.com/2013/12/12/plotting-pitches-ggplot2-tips-and-tricks/)
 
@@ -121,7 +123,7 @@ kZone = data.frame(x = c(inKzone, inKzone, outKzone, outKzone, inKzone),
                    y = c(botKzone, topKzone, topKzone, botKzone, botKzone))
 ```
 
-## Pitch Location via Pitch Type
+### Pitch Location via Pitch Type
 
 Let's look at pitch location via pitch type.
 
@@ -158,7 +160,7 @@ verlander.heatmap.type = graph.pitch.heatmap.type(verlander)
 verlander.heatmap.type
 ```
 
-## Pitch Location via Velocity
+### Pitch Location via Velocity
 
 Let's look at pitch location via velocity.
 
@@ -196,7 +198,7 @@ verlander.heatmap.velo = graph.pitch.heatmap.velo(verlander)
 verlander.heatmap.velo
 ```
 
-## Pitch Movement {.tabset .tabset-fade}
+### Pitch Movement {.tabset .tabset-fade}
 
 To view the movement, let's just determine the average movement for each type of pitch that each player has. First let's make a few helpful functions for us.
 
@@ -225,7 +227,7 @@ graph.pitch.ymovement = function(player) {
 }
 ```
 
-### Patrick Corbin
+#### Patrick Corbin
 
 ```{r}
 corbin.xmove = graph.pitch.xmovement(corbin)
@@ -234,7 +236,7 @@ corbin.xmove
 corbin.ymove
 ```
 
-### Marcus Stroman
+#### Marcus Stroman
 
 ```{r}
 stroman.xmove = graph.pitch.xmovement(stroman)
@@ -243,7 +245,7 @@ stroman.xmove
 stroman.ymove
 ```
 
-### Noah Syndergaard
+#### Noah Syndergaard
 
 ```{r}
 syndergaard.xmove = graph.pitch.xmovement(syndergaard)
@@ -252,7 +254,7 @@ syndergaard.xmove
 syndergaard.ymove
 ```
 
-### Blake Treinen
+#### Blake Treinen
 
 ```{r}
 treinen.xmove = graph.pitch.xmovement(treinen)
@@ -261,7 +263,7 @@ treinen.xmove
 treinen.ymove
 ```
 
-### Felipe Vazquez
+#### Felipe Vazquez
 
 ```{r}
 vazquez.xmove = graph.pitch.xmovement(vazquez)
@@ -270,7 +272,7 @@ vazquez.xmove
 vazquez.ymove
 ```
 
-### Justin Verlander
+#### Justin Verlander
 
 ```{r}
 verlander.xmove = graph.pitch.xmovement(verlander)
@@ -279,7 +281,7 @@ verlander.xmove
 verlander.ymove
 ```
 
-## Pitch Velocity
+### Pitch Velocity
 
 We need to separate each pitch first by type. Then we can see how the pitch's velocity changed over time.
 
@@ -313,7 +315,7 @@ verlander.velo = graph.pitch.velo(verlander)
 verlander.velo
 ```
 
-## Pitch Spin Rate
+### Pitch Spin Rate
 
 ```{r pitch_spin}
 graph.pitch.spin = function(player) {
@@ -345,3 +347,17 @@ vazquez.spin
 verlander.spin = graph.pitch.spin(verlander)
 verlander.spin
 ```
+
+## Analysis {.tabset .tabset-fade}
+
+I'll be looking at a few specific Pittsburgh Pirates pitchers and looking at them from year to year.
+
+### Jameson Taillon
+
+### Richard Rodriguez
+
+### Joe Musgrove
+
+### Jordan Lyles
+
+### Kyle Crick
