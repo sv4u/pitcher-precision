@@ -43,7 +43,7 @@ Here are the list of players I will be looking at.
 
 Let's now scrape the data for each player.
 
-```{r disco_data}
+```{r disco_data, message = FALSE}
 scrape.data = function(start, id) {
     data = scrape_statcast_savant(start_date = start,
                                   end_date = "2019-04-22",
@@ -126,14 +126,14 @@ kZone = data.frame(x = c(inKzone, inKzone, outKzone, outKzone, inKzone),
 Let's look at pitch location via pitch type.
 
 ```{r pitch_heatmap_type}
-graph.pitch.heatmap.type = function(player.data) {
-    graph = ggplot(player.data) +
-        geom_jitter(aes(x = player.data$xcoord,
-                        y = player.data$ycoord,
-                        color = player.data$pitch)) +
+graph.pitch.heatmap.type = function(player) {
+    graph = ggplot(player) +
+        geom_jitter(aes(x = player$xcoord,
+                        y = player$ycoord,
+                        color = player$pitch)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
-        ggtitle(paste(player.data$name[1], "Heatmap", sep = " ")) +
+        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
         labs(color = "Pitch Type") +
         theme_minimal() + geom_path(aes(x, y), data = kZone)
     graph
@@ -196,7 +196,88 @@ verlander.heatmap.velo = graph.pitch.heatmap.velo(verlander)
 verlander.heatmap.velo
 ```
 
-## Pitch Movement
+## Pitch Movement {.tabset .tabset-fade}
+
+To view the movement, let's just determine the average movement for each type of pitch that each player has. First let's make a few helpful functions for us.
+
+```{r pitch_mov}
+graph.pitch.xmovement = function(player) {
+    graph = ggplot(player) +
+        geom_boxplot(aes(x = player$pitch,
+                         y = player$xmove,
+                         color = player$pitch)) +
+        coord_flip() +
+        labs(color = "Pitch Type") +
+        xlab("Pitch Type") + ylab("Horizontal Movement") +
+        ggtitle(paste(player$name[1], "Horizontal Movement", sep = " ")) +
+        theme_minimal()
+}
+
+graph.pitch.ymovement = function(player) {
+    graph = ggplot(player) +
+        geom_boxplot(aes(x = player$pitch,
+                         y = player$ymove,
+                         color = player$pitch)) +
+        labs(color = "Pitch Type") +
+        xlab("Pitch Type") + ylab("Vertical Movement") +
+        ggtitle(paste(player$name[1], "Vertical Movement", sep = " ")) +
+        theme_minimal()
+}
+```
+
+### Patrick Corbin
+
+```{r}
+corbin.xmove = graph.pitch.xmovement(corbin)
+corbin.ymove = graph.pitch.ymovement(corbin)
+corbin.xmove
+corbin.ymove
+```
+
+### Marcus Stroman
+
+```{r}
+stroman.xmove = graph.pitch.xmovement(stroman)
+stroman.ymove = graph.pitch.ymovement(stroman)
+stroman.xmove
+stroman.ymove
+```
+
+### Noah Syndergaard
+
+```{r}
+syndergaard.xmove = graph.pitch.xmovement(syndergaard)
+syndergaard.ymove = graph.pitch.ymovement(syndergaard)
+syndergaard.xmove
+syndergaard.ymove
+```
+
+### Blake Treinen
+
+```{r}
+treinen.xmove = graph.pitch.xmovement(treinen)
+treinen.ymove = graph.pitch.ymovement(treinen)
+treinen.xmove
+treinen.ymove
+```
+
+### Felipe Vazquez
+
+```{r}
+vazquez.xmove = graph.pitch.xmovement(vazquez)
+vazquez.ymove = graph.pitch.ymovement(vazquez)
+vazquez.xmove
+vazquez.ymove
+```
+
+### Justin Verlander
+
+```{r}
+verlander.xmove = graph.pitch.xmovement(verlander)
+verlander.ymove = graph.pitch.ymovement(verlander)
+verlander.xmove
+verlander.ymove
+```
 
 ## Pitch Velocity
 
@@ -204,7 +285,6 @@ We need to separate each pitch first by type. Then we can see how the pitch's ve
 
 ```{r pitch_velo}
 graph.pitch.velo = function(player) {
-    # player = player[complete.cases(player),]
     graph = ggplot(player) +
         geom_line(aes(x = 1:length(player$velo),
                       y = player$velo,
@@ -234,3 +314,34 @@ verlander.velo
 ```
 
 ## Pitch Spin Rate
+
+```{r pitch_spin}
+graph.pitch.spin = function(player) {
+    graph = ggplot(player) +
+        geom_step(aes(x = 1:length(player$spin),
+                      y = player$spin,
+                      color = player$pitch),
+                  direction = "vh") +
+        xlab("Pitches Thrown") + ylab("Spin Rate") + labs(color = "Pitch Type") +
+        ggtitle(paste(player$name[1], "Pitch Spin Rate Chart", sep = " ")) +
+        theme_minimal()
+}
+
+corbin.spin = graph.pitch.spin(corbin)
+corbin.spin
+
+stroman.spin = graph.pitch.spin(stroman)
+stroman.spin
+
+syndergaard.spin = graph.pitch.spin(syndergaard)
+syndergaard.spin
+
+treinen.spin = graph.pitch.spin(treinen)
+treinen.spin
+
+vazquez.spin = graph.pitch.spin(vazquez)
+vazquez.spin
+
+verlander.spin = graph.pitch.spin(verlander)
+verlander.spin
+```
