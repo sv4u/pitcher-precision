@@ -48,7 +48,7 @@ Let's now scrape the data for each player.
 ```{r disco_data, message = FALSE}
 scrape.data = function(start, id) {
     data = scrape_statcast_savant(start_date = start,
-                                  end_date = "2019-04-22",
+                                  end_date = format(Sys.time(), "%Y-%m-%d"),
                                   playerid = id,
                                   player_type = 'pitcher')
     data
@@ -81,7 +81,8 @@ filter.data = function(data) {
                           velo = data %>% pull(effective_speed),
                           spin = data %>% pull(release_spin_rate),
                           exvelo = data %>% pull(launch_speed),
-                          exang = data %>% pull(launch_angle))
+                          exang = data %>% pull(launch_angle),
+                          year = substring(data %>% pull(game_date), 0, 4))
     filtered
 }
 
@@ -121,6 +122,43 @@ inKzone = -.95
 outKzone = 0.95
 kZone = data.frame(x = c(inKzone, inKzone, outKzone, outKzone, inKzone),
                    y = c(botKzone, topKzone, topKzone, botKzone, botKzone))
+```
+
+### Pitch Location via Outcome
+
+Let's look at pitch location with if the pitch is a ball or strike. We know X is hit into play, B is ball, and S is any type of strike.
+
+```{r pitch_heatmap_out}
+graph.pitch.heatmap.out = function(player) {
+    graph = ggplot(player) +
+        geom_jitter(aes(x = player$xcoord,
+                        y = player$ycoord,
+                        color = player$outcome)) +
+        xlab("Horizontal Position") +
+        ylab("Vertical Position") +
+        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
+        labs(color = "Pitch Outcome") +
+        theme_minimal() + geom_path(aes(x, y), data = kZone)
+    graph
+}
+
+corbin.heatmap.out = graph.pitch.heatmap.out(corbin)
+corbin.heatmap.out
+
+stroman.heatmap.out = graph.pitch.heatmap.out(stroman)
+stroman.heatmap.out
+
+syndergaard.heatmap.out = graph.pitch.heatmap.out(syndergaard)
+syndergaard.heatmap.out
+
+treinen.heatmap.out = graph.pitch.heatmap.out(treinen)
+treinen.heatmap.out
+
+vazquez.heatmap.out = graph.pitch.heatmap.out(vazquez)
+vazquez.heatmap.out
+
+verlander.heatmap.out = graph.pitch.heatmap.out(verlander)
+verlander.heatmap.out
 ```
 
 ### Pitch Location via Pitch Type
@@ -165,14 +203,14 @@ verlander.heatmap.type
 Let's look at pitch location via velocity.
 
 ```{r pitch_heatmap_velo}
-graph.pitch.heatmap.velo = function(player.data) {
-    graph = ggplot(player.data) +
-        geom_jitter(aes(x = player.data$xcoord,
-                        y = player.data$ycoord,
-                        color = player.data$velo)) +
+graph.pitch.heatmap.velo = function(player) {
+    graph = ggplot(player) +
+        geom_jitter(aes(x = player$xcoord,
+                        y = player$ycoord,
+                        color = player$velo)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
-        ggtitle(paste(player.data$name[1], "Heatmap", sep = " ")) +
+        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
         labs(color = "Velocity") +
         scale_color_gradient(low = "blue", high = "red") +
         theme_minimal() + geom_path(aes(x, y), data = kZone)
@@ -354,10 +392,86 @@ I'll be looking at a few specific Pittsburgh Pirates pitchers and looking at the
 
 ### Jameson Taillon
 
+Let's first read in our data for Taillon.
+
+```{r}
+taillon.data = scrape.data("2018-01-01", 592791)
+taillon = filter.data(taillon.data)
+```
+
+Now, let's just get some averages of Taillon's pitches.
+
+```{r}
+taillon.ff = taillon[taillon$pitch == "FF",]
+taillon.ft = taillon[taillon$pitch == "FT",]
+taillon.sl = taillon[taillon$pitch == "SL",]
+taillon.cu = taillon[taillon$pitch == "CU",]
+taillon.ch = taillon[taillon$pitch == "CH",]
+
+taillon.ff = taillon.ff[complete.cases(taillon.ff),]
+taillon.ft = taillon.ff[complete.cases(taillon.ft),]
+taillon.sl = taillon.ff[complete.cases(taillon.sl),]
+taillon.cu = taillon.ff[complete.cases(taillon.cu),]
+taillon.ch = taillon.ff[complete.cases(taillon.ch),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate |
+| ----- | ---------------- | ------------------ | ----------------- |
+| 4-Seam Fastball | `r mean(taillon.ff$velo)` | `r sd(taillon.ff$velo)` | `r mean(taillon.ff$spin)` |
+| 2-Seam Fastball | `r mean(taillon.ft$velo)` | `r sd(taillon.ft$velo)` | `r mean(taillon.ft$spin)` |
+| Slider | `r mean(taillon.ft$velo)` | `r sd(taillon.sl$velo)` | `r mean(taillon.sl$spin)` |
+| Curveball | `r mean(taillon.cu$velo)` | `r sd(taillon.cu$velo)` | `r mean(taillon.cu$spin)` |
+| Changeup | `r mean(taillon.ch$velo)` | `r sd(taillon.ch$velo)` | `r mean(taillon.ch$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+taillon.heatmap.out = graph.pitch.heatmap.out(taillon)
+taillon.heatmap.out
+
+taillon.heatmap.type = graph.pitch.heatmap.type(taillon)
+taillon.heatmap.type
+
+taillon.heatmap.velo = graph.pitch.heatmap.velo(taillon)
+taillon.heatmap.velo
+
+taillon.spin = graph.pitch.spin(taillon)
+taillon.spin
+
+taillon.velo = graph.pitch.velo(taillon)
+taillon.velo
+
+taillon.xmove = graph.pitch.xmovement(taillon)
+taillon.xmove
+
+taillon.ymove = graph.pitch.ymovement(taillon)
+taillon.ymove
+```
+
 ### Richard Rodriguez
+
+```{r}
+rodriguez.data = scrape.data("2018-01-01", 593144)
+rodriguez = filter.data(rodriguez.data)
+```
 
 ### Joe Musgrove
 
+```{r}
+musgrove.data = scrape.data("2018-01-01", 605397)
+musgrove = filter.data(musgrove.data)
+```
+
 ### Jordan Lyles
 
+```{r}
+lyles.data = scrape.data("2018-01-01", 543475)
+lyles = filter.data(lyles.data)
+```
+
 ### Kyle Crick
+
+```{r}
+crick.data = scrape.data("2018-01-01", 605195)
+crick = filter.data(crick.data)
+```
