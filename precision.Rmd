@@ -786,12 +786,202 @@ Let's view all his frequencies together in a tabular format.
 | Slider | `r pitch.count(rodriguez.2019, "SL")` | `r pitch.frequency(rodriguez.2019, "SL")` |
 |
 
-## Chris Archer
+## Chris Archer {.tabset .tabset-fade}
+
+### Data Acquisition
 
 ```{r}
-archer.data = scrape.data("2018-01-01", 502042)
-archer = filter.data(archer.data)
+archer.data.2018 = scrape.data("2018-05-31", 502042)
+archer.2018 = filter.data(archer.data.2018)
+
+archer.data.2019 = scrape.data("2019-01-01", 502042)
+archer.2019 = filter.data(archer.data.2019)
 ```
+
+### 2018
+
+Now, let's just get some averages of Archer's pitches for 2018.
+
+```{r}
+archer.ff.2018 = archer.2018[archer.2018$pitch == "FF",]
+archer.ft.2018 = archer.2018[archer.2018$pitch == "FT",]
+archer.sl.2018 = archer.2018[archer.2018$pitch == "SL",]
+archer.cu.2018 = archer.2018[archer.2018$pitch == "CU",]
+archer.ch.2018 = archer.2018[archer.2018$pitch == "CH",]
+
+archer.ff.2018 = archer.ff.2018[complete.cases(archer.ff.2018),]
+archer.ft.2018 = archer.ft.2018[complete.cases(archer.ft.2018),]
+archer.sl.2018 = archer.sl.2018[complete.cases(archer.sl.2018),]
+archer.cu.2018 = archer.cu.2018[complete.cases(archer.cu.2018),]
+archer.ch.2018 = archer.ch.2018[complete.cases(archer.ch.2018),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(archer.ff.2018$velo)` | `r sd(archer.ff.2018$velo)` | `r mean(archer.ff.2018$spin)` | `r sd(archer.ff.2018$spin)` |
+| 2-Seam Fastball | `r mean(archer.ft.2018$velo)` | `r sd(archer.ft.2018$velo)` | `r mean(archer.ft.2018$spin)` | `r sd(archer.ft.2018$spin)` |
+| Slider | `r mean(archer.sl.2018$velo)` | `r sd(archer.sl.2018$velo)` | `r mean(archer.sl.2018$spin)` | `r sd(archer.sl.2018$spin)` |
+| Curveball | `r mean(archer.cu.2018$velo)` | `r sd(archer.cu.2018$velo)` | `r mean(archer.cu.2018$spin)` | `r sd(archer.cu.2018$spin)` |
+| Changeup | `r mean(archer.ch.2018$velo)` | `r sd(archer.ch.2018$velo)` | `r mean(archer.ch.2018$spin)` | `r sd(archer.ch.2018$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+archer.heatmap.out.2018 = graph.pitch.heatmap.out(archer.2018)
+archer.heatmap.out.2018
+
+archer.heatmap.type.2018 = graph.pitch.heatmap.type(archer.2018)
+archer.heatmap.type.2018
+
+archer.heatmap.velo.2018 = graph.pitch.heatmap.velo(archer.2018)
+archer.heatmap.velo.2018
+
+archer.spin.2018 = graph.pitch.spin(archer.2018)
+archer.spin.2018
+
+archer.velo.2018 = graph.pitch.velo(archer.2018)
+archer.velo.2018
+
+archer.xmove.2018 = graph.pitch.xmovement(archer.2018)
+archer.xmove.2018
+
+archer.ymove.2018 = graph.pitch.ymovement(archer.2018)
+archer.ymove.2018
+```
+
+What's also important is to determine how many of his pitches were barrelled (strong contact).
+
+```{r}
+count.barrels = function(player) {
+    s = sum(player$contact == 6, na.rm = TRUE)
+    s
+}
+
+barrel.probability = function(player) {
+    b = count.barrels(player)
+    t = NROW(player$contact)
+    p = (b * 1.0)/t
+    p
+}
+```
+
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(archer.2018)` | `r barrel.probability(archer.2018)` |
+| 4-Seam Fastball | `r count.barrels(archer.ff.2018)` | `r barrel.probability(archer.ff.2018)` |
+| 2-Seam Fastball | `r count.barrels(archer.ft.2018)` | `r barrel.probability(archer.ft.2018)` |
+| Slider | `r count.barrels(archer.sl.2018)` | `r barrel.probability(archer.sl.2018)` |
+| Curveball | `r count.barrels(archer.cu.2018)` | `r barrel.probability(archer.cu.2018)` |
+| Changeup | `r count.barrels(archer.ch.2018)` | `r barrel.probability(archer.ch.2018)` |
+
+Let's also take a look at his pitch frequencies.
+
+```{r}
+pitch.count = function(player, type) {
+    c = sum(player$pitch == type, na.rm = TRUE)
+    c
+}
+
+pitch.frequency = function(player, type) {
+    c = pitch.count(player, type)
+    t = NROW(player$pitch)
+    f = (c * 1.0) / t
+    f
+}
+```
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(archer.2018, "FF")` | `r pitch.frequency(archer.2018, "FF")` |
+| 2-Seam Fastball | `r pitch.count(archer.2018, "FT")` | `r pitch.frequency(archer.2018, "FT")` |
+| Slider | `r pitch.count(archer.2018, "SL")` | `r pitch.frequency(archer.2018, "SL")` |
+| Curveball | `r pitch.count(archer.2018, "CU")` | `r pitch.frequency(archer.2018, "CU")` |
+| Changeup | `r pitch.count(archer.2018, "CH")` | `r pitch.frequency(archer.2018, "CH")` |
+
+### 2019
+
+Now, let's just get some averages of Archer's pitches for 2019.
+
+```{r}
+archer.ff.2019 = archer.2019[archer.2019$pitch == "FF",]
+archer.ft.2019 = archer.2019[archer.2019$pitch == "FT",]
+archer.fc.2019 = archer.2019[archer.2019$pitch == "FC",]
+archer.sl.2019 = archer.2019[archer.2019$pitch == "SL",]
+archer.cu.2019 = archer.2019[archer.2019$pitch == "CU",]
+archer.ch.2019 = archer.2019[archer.2019$pitch == "CH",]
+
+archer.ff.2019 = archer.ff.2019[complete.cases(archer.ff.2019),]
+archer.ft.2019 = archer.ft.2019[complete.cases(archer.ft.2019),]
+archer.fc.2019 = archer.fc.2019[complete.cases(archer.fc.2019),]
+archer.sl.2019 = archer.sl.2019[complete.cases(archer.sl.2019),]
+archer.cu.2019 = archer.cu.2019[complete.cases(archer.cu.2019),]
+archer.ch.2019 = archer.ch.2019[complete.cases(archer.ch.2019),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(archer.ff.2019$velo)` | `r sd(archer.ff.2019$velo)` | `r mean(archer.ff.2019$spin)` | `r sd(archer.ff.2019$spin)` |
+| 2-Seam Fastball | `r mean(archer.ft.2019$velo)` | `r sd(archer.ft.2019$velo)` | `r mean(archer.ft.2019$spin)` | `r sd(archer.ft.2019$spin)` |
+| Cut Fastball | `r mean(archer.fc.2019$velo)` | `r sd(archer.fc.2019$velo)` | `r mean(archer.fc.2019$spin)` | `r sd(archer.fc.2019$spin)` |
+| Slider | `r mean(archer.sl.2019$velo)` | `r sd(archer.sl.2019$velo)` | `r mean(archer.sl.2019$spin)` | `r sd(archer.sl.2019$spin)` |
+| Curveball | `r mean(archer.cu.2019$velo)` | `r sd(archer.cu.2019$velo)` | `r mean(archer.cu.2019$spin)` | `r sd(archer.cu.2019$spin)` |
+| Changeup | `r mean(archer.ch.2019$velo)` | `r sd(archer.ch.2019$velo)` | `r mean(archer.ch.2019$spin)` | `r sd(archer.ch.2019$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+archer.heatmap.out.2019 = graph.pitch.heatmap.out(archer.2019)
+archer.heatmap.out.2019
+
+archer.heatmap.type.2019 = graph.pitch.heatmap.type(archer.2019)
+archer.heatmap.type.2019
+
+archer.heatmap.velo.2019 = graph.pitch.heatmap.velo(archer.2019)
+archer.heatmap.velo.2019
+
+archer.spin.2019 = graph.pitch.spin(archer.2019)
+archer.spin.2019
+
+archer.velo.2019 = graph.pitch.velo(archer.2019)
+archer.velo.2019
+
+archer.xmove.2019 = graph.pitch.xmovement(archer.2019)
+archer.xmove.2019
+
+archer.ymove.2019 = graph.pitch.ymovement(archer.2019)
+archer.ymove.2019
+```
+
+What's also important is to determine how many of his pitches were barrelled (strong contact).
+
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(archer.2019)` | `r barrel.probability(archer.2019)` |
+| 4-Seam Fastball | `r count.barrels(archer.ff.2019)` | `r barrel.probability(archer.ff.2019)` |
+| 2-Seam Fastball | `r count.barrels(archer.ft.2019)` | `r barrel.probability(archer.ft.2019)` |
+| Cut Fastball | `r count.barrels(archer.fc.2019)` | `r barrel.probability(archer.fc.2019)` |
+| Slider | `r count.barrels(archer.sl.2019)` | `r barrel.probability(archer.sl.2019)` |
+| Curveball | `r count.barrels(archer.cu.2019)` | `r barrel.probability(archer.cu.2019)` |
+| Changeup | `r count.barrels(archer.ch.2019)` | `r barrel.probability(archer.ch.2019)` |
+
+Let's also take a look at his pitch frequencies.
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(archer.2019, "FF")` | `r pitch.frequency(archer.2019, "FF")` |
+| 2-Seam Fastball | `r pitch.count(archer.2019, "FT")` | `r pitch.frequency(archer.2019, "FT")` |
+| Cut Fastball | `r pitch.count(archer.2019, "FC")` | `r pitch.frequency(archer.2019, "FC")` |
+| Slider | `r pitch.count(archer.2019, "SL")` | `r pitch.frequency(archer.2019, "SL")` |
+| Curveball | `r pitch.count(archer.2019, "CU")` | `r pitch.frequency(archer.2019, "CU")` |
+| Changeup | `r pitch.count(archer.2019, "CH")` | `r pitch.frequency(archer.2019, "CH")` |
 
 ## Jordan Lyles
 
