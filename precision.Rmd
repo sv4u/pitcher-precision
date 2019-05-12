@@ -59,7 +59,6 @@ corbin.data = scrape.data(start, 571578)
 vazquez.data = scrape.data(start, 553878)
 stroman.data = scrape.data(start, 573186)
 verlander.data = scrape.data(start, 434378)
-treinen.data = scrape.data(start, 595014)
 ```
 
 Now with our data, let's get the information we want out of it.
@@ -91,7 +90,6 @@ filter.data = function(data) {
 syndergaard = filter.data(syndergaard.data)
 corbin = filter.data(corbin.data)
 stroman = filter.data(stroman.data)
-treinen = filter.data(treinen.data)
 vazquez = filter.data(vazquez.data)
 verlander = filter.data(verlander.data)
 ```
@@ -166,13 +164,6 @@ syndergaard.heatmap.out = graph.pitch.heatmap.out(syndergaard)
 syndergaard.heatmap.out
 ```
 
-#### Blake Treinen
-
-```{r}
-treinen.heatmap.out = graph.pitch.heatmap.out(treinen)
-treinen.heatmap.out
-```
-
 #### Felipe Vazquez
 
 ```{r}
@@ -225,13 +216,6 @@ stroman.heatmap.type
 ```{r}
 syndergaard.heatmap.type = graph.pitch.heatmap.type(syndergaard)
 syndergaard.heatmap.type
-```
-
-#### Blake Treinen
-
-```{r}
-treinen.heatmap.type = graph.pitch.heatmap.type(treinen)
-treinen.heatmap.type
 ```
 
 #### Felipe Vazquez
@@ -287,13 +271,6 @@ stroman.heatmap.velo
 ```{r}
 syndergaard.heatmap.velo = graph.pitch.heatmap.velo(syndergaard)
 syndergaard.heatmap.velo
-```
-
-#### Blake Treinen
-
-```{r}
-treinen.heatmap.velo = graph.pitch.heatmap.velo(treinen)
-treinen.heatmap.velo
 ```
 
 #### Felipe Vazquez
@@ -366,15 +343,6 @@ syndergaard.xmove
 syndergaard.ymove
 ```
 
-#### Blake Treinen
-
-```{r}
-treinen.xmove = graph.pitch.xmovement(treinen)
-treinen.ymove = graph.pitch.ymovement(treinen)
-treinen.xmove
-treinen.ymove
-```
-
 #### Felipe Vazquez
 
 ```{r}
@@ -430,13 +398,6 @@ syndergaard.velo = graph.pitch.velo(syndergaard)
 syndergaard.velo
 ```
 
-#### Blake Treinen
-
-```{r}
-treinen.velo = graph.pitch.velo(treinen)
-treinen.velo
-```
-
 #### Felipe Vazquez
 
 ```{r}
@@ -487,13 +448,6 @@ stroman.spin
 ```{r}
 syndergaard.spin = graph.pitch.spin(syndergaard)
 syndergaard.spin
-```
-
-#### Blake Treinen
-
-```{r}
-treinen.spin = graph.pitch.spin(treinen)
-treinen.spin
 ```
 
 #### Felipe Vazquez
@@ -582,7 +536,7 @@ What's also important is to determine how many of his pitches were barrelled (st
 
 ```{r}
 count.barrels = function(player) {
-    s = sum(player$contact == 6)
+    s = sum(player$contact == 6, na.rm = TRUE)
     s
 }
 
@@ -609,7 +563,7 @@ Let's also take a look at his pitch frequencies.
 
 ```{r}
 pitch.count = function(player, type) {
-    c = sum(player$pitch == type)
+    c = sum(player$pitch == type, na.rm = TRUE)
     c
 }
 
@@ -699,64 +653,144 @@ Let's view all his frequencies together in a tabular format.
 
 | Pitch | Pitch Count | Pitch Frequency |
 | ----- | ----------- | --------------- |
-| 4-Seam Fastball | `r pitch.count(taillon.2018, "FF")` | `r pitch.frequency(taillon.2018, "FF")` |
-| 2-Seam Fastball | `r pitch.count(taillon.2018, "FT")` | `r pitch.frequency(taillon.2018, "FT")` |
-| Slider | `r pitch.count(taillon.2018, "SL")` | `r pitch.frequency(taillon.2018, "SL")` |
-| Curveball | `r pitch.count(taillon.2018, "CU")` | `r pitch.frequency(taillon.2018, "CU")` |
-| Changeup | `r pitch.count(taillon.2018, "CH")` | `r pitch.frequency(taillon.2018, "CH")` |
+| 4-Seam Fastball | `r pitch.count(taillon.2019, "FF")` | `r pitch.frequency(taillon.2019, "FF")` |
+| 2-Seam Fastball | `r pitch.count(taillon.2019, "FT")` | `r pitch.frequency(taillon.2019, "FT")` |
+| Slider | `r pitch.count(taillon.2019, "SL")` | `r pitch.frequency(taillon.2019, "SL")` |
+| Curveball | `r pitch.count(taillon.2019, "CU")` | `r pitch.frequency(taillon.2019, "CU")` |
+| Changeup | `r pitch.count(taillon.2019, "CH")` | `r pitch.frequency(taillon.2019, "CH")` |
 
-## Richard Rodriguez
+## Richard Rodriguez {.tabset .tabset-fade}
+
+### Data Acquisition
 
 ```{r}
-rodriguez.data = scrape.data("2018-01-01", 593144)
-rodriguez = filter.data(rodriguez.data)
+rodriguez.data.2018 = scrape.data("2018-01-01", 593144)
+rodriguez.2018 = filter.data(rodriguez.data.2018)
+rodriguez.data.2019 = scrape.data("2019-01-01", 593144)
+rodriguez.2019 = filter.data(rodriguez.data.2019)
 ```
+
+### 2018
 
 Now, let's just get some averages of Rodriguez's pitches.
 
 ```{r}
-rodriguez.ff = rodriguez[rodriguez$pitch == "FF",]
-rodriguez.sl = rodriguez[rodriguez$pitch == "SL",]
+rodriguez.ff.2018 = rodriguez.2018[rodriguez.2018$pitch == "FF",]
+rodriguez.sl.2018 = rodriguez.2018[rodriguez.2018$pitch == "SL",]
 
-rodriguez.ff = rodriguez.ff[complete.cases(rodriguez.ff),]
-rodriguez.sl = rodriguez.sl[complete.cases(rodriguez.sl),]
+rodriguez.ff.2018 = rodriguez.ff.2018[complete.cases(rodriguez.ff.2018),]
+rodriguez.sl.2018 = rodriguez.sl.2018[complete.cases(rodriguez.sl.2018),]
 ```
 
 | Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
 | ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
-| 4-Seam Fastball | `r mean(rodriguez.ff$velo)` | `r sd(rodriguez.ff$velo)` | `r mean(rodriguez.ff$spin)` | `r sd(rodriguez.ff$spin)` |
-| Slider | `r mean(rodriguez.sl$velo)` | `r sd(rodriguez.sl$velo)` | `r mean(rodriguez.sl$spin)` | `r sd(rodriguez.sl$spin)` |
+| 4-Seam Fastball | `r mean(rodriguez.ff.2018$velo)` | `r sd(rodriguez.ff.2018$velo)` | `r mean(rodriguez.ff.2018$spin)` | `r sd(rodriguez.ff.2018$spin)` |
+| Slider | `r mean(rodriguez.sl.2018$velo)` | `r sd(rodriguez.sl.2018$velo)` | `r mean(rodriguez.sl.2018$spin)` | `r sd(rodriguez.sl.2018$spin)` |
 
 Now let's make some graphs.
 
 ```{r}
-rodriguez.heatmap.out = graph.pitch.heatmap.out(rodriguez)
-rodriguez.heatmap.out
+rodriguez.heatmap.out.2018 = graph.pitch.heatmap.out(rodriguez.2018)
+rodriguez.heatmap.out.2018
 
-rodriguez.heatmap.type = graph.pitch.heatmap.type(rodriguez)
-rodriguez.heatmap.type
+rodriguez.heatmap.type.2018 = graph.pitch.heatmap.type(rodriguez.2018)
+rodriguez.heatmap.type.2018
 
-rodriguez.heatmap.velo = graph.pitch.heatmap.velo(rodriguez)
-rodriguez.heatmap.velo
+rodriguez.heatmap.velo.2018 = graph.pitch.heatmap.velo(rodriguez.2018)
+rodriguez.heatmap.velo.2018
 
-rodriguez.spin = graph.pitch.spin(rodriguez)
-rodriguez.spin
+rodriguez.spin.2018 = graph.pitch.spin(rodriguez.2018)
+rodriguez.spin.2018
 
-rodriguez.velo = graph.pitch.velo(rodriguez)
-rodriguez.velo
+rodriguez.velo.2018 = graph.pitch.velo(rodriguez.2018)
+rodriguez.velo.2018
 
-rodriguez.xmove = graph.pitch.xmovement(rodriguez)
-rodriguez.xmove
+rodriguez.xmove.2018 = graph.pitch.xmovement(rodriguez.2018)
+rodriguez.xmove.2018
 
-rodriguez.ymove = graph.pitch.ymovement(rodriguez)
-rodriguez.ymove
+rodriguez.ymove.2018 = graph.pitch.ymovement(rodriguez.2018)
+rodriguez.ymove.2018
 ```
 
-## Joe Musgrove
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(rodriguez.2018)` | `r barrel.probability(rodriguez.2018)` |
+| 4-Seam Fastball | `r count.barrels(rodriguez.ff.2018)` | `r barrel.probability(rodriguez.ff.2018)` |
+| Slider | `r count.barrels(rodriguez.sl.2018)` | `r barrel.probability(rodriguez.sl.2018)` |
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(rodriguez.2018, "FF")` | `r pitch.frequency(rodriguez.2018, "FF")` |
+| Slider | `r pitch.count(rodriguez.2018, "SL")` | `r pitch.frequency(rodriguez.2018, "SL")` |
+|
+
+### 2019
+
+Now, let's just get some averages of Rodriguez's pitches.
 
 ```{r}
-musgrove.data = scrape.data("2018-01-01", 605397)
-musgrove = filter.data(musgrove.data)
+rodriguez.ff.2019 = rodriguez.2019[rodriguez.2019$pitch == "FF",]
+rodriguez.sl.2019 = rodriguez.2019[rodriguez.2019$pitch == "SL",]
+
+rodriguez.ff.2019 = rodriguez.ff.2019[complete.cases(rodriguez.ff.2019),]
+rodriguez.sl.2019 = rodriguez.sl.2019[complete.cases(rodriguez.sl.2019),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(rodriguez.ff.2019$velo)` | `r sd(rodriguez.ff.2019$velo)` | `r mean(rodriguez.ff.2019$spin)` | `r sd(rodriguez.ff.2019$spin)` |
+| Slider | `r mean(rodriguez.sl.2019$velo)` | `r sd(rodriguez.sl.2019$velo)` | `r mean(rodriguez.sl.2019$spin)` | `r sd(rodriguez.sl.2019$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+rodriguez.heatmap.out.2019 = graph.pitch.heatmap.out(rodriguez.2019)
+rodriguez.heatmap.out.2019
+
+rodriguez.heatmap.type.2019 = graph.pitch.heatmap.type(rodriguez.2019)
+rodriguez.heatmap.type.2019
+
+rodriguez.heatmap.velo.2019 = graph.pitch.heatmap.velo(rodriguez.2019)
+rodriguez.heatmap.velo.2019
+
+rodriguez.spin.2019 = graph.pitch.spin(rodriguez.2019)
+rodriguez.spin.2019
+
+rodriguez.velo.2019 = graph.pitch.velo(rodriguez.2019)
+rodriguez.velo.2019
+
+rodriguez.xmove.2019 = graph.pitch.xmovement(rodriguez.2019)
+rodriguez.xmove.2019
+
+rodriguez.ymove.2019 = graph.pitch.ymovement(rodriguez.2019)
+rodriguez.ymove.2019
+```
+
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(rodriguez.2019)` | `r barrel.probability(rodriguez.2019)` |
+| 4-Seam Fastball | `r count.barrels(rodriguez.ff.2019)` | `r barrel.probability(rodriguez.ff.2019)` |
+| Slider | `r count.barrels(rodriguez.sl.2019)` | `r barrel.probability(rodriguez.sl.2019)` |
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(rodriguez.2019, "FF")` | `r pitch.frequency(rodriguez.2019, "FF")` |
+| Slider | `r pitch.count(rodriguez.2019, "SL")` | `r pitch.frequency(rodriguez.2019, "SL")` |
+|
+
+## Chris Archer
+
+```{r}
+archer.data = scrape.data("2018-01-01", 502042)
+archer = filter.data(archer.data)
 ```
 
 ## Jordan Lyles
