@@ -6,15 +6,13 @@ runtime: shiny
 output: html_document
 ---
 
-# {.tabset .tabset-fade}
-
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results='hide'}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Last Update: `r Sys.time()`
 
-## Libraries
+# Libraries
 
 Let's load some libraries in first.
 
@@ -32,7 +30,7 @@ rm(list = ls())
 
 With these libraries, we can get out data as well as visaulize it. Let's take a look at some players to see what we can look at.
 
-## Data Loading
+# Data Loading
 
 Here are the list of players I will be looking at.
 
@@ -82,7 +80,11 @@ filter.data = function(data) {
                           spin = data %>% pull(release_spin_rate),
                           exvelo = data %>% pull(launch_speed),
                           exang = data %>% pull(launch_angle),
+                          contact = data %>% pull(launch_speed_angle),
                           year = substring(data %>% pull(game_date), 0, 4))
+    filtered$exvelo[is.na(filtered$exvelo)] = 0
+    filtered$exang[is.na(filtered$exang)] = 0
+    filtered$contact[is.na(filtered$contact)] = 0
     filtered
 }
 
@@ -124,7 +126,7 @@ kZone = data.frame(x = c(inKzone, inKzone, outKzone, outKzone, inKzone),
                    y = c(botKzone, topKzone, topKzone, botKzone, botKzone))
 ```
 
-### Pitch Location via Outcome
+### Location via Outcome {.tabset .tabset-fade}
 
 Let's look at pitch location with if the pitch is a ball or strike. We know X is hit into play, B is ball, and S is any type of strike.
 
@@ -136,32 +138,56 @@ graph.pitch.heatmap.out = function(player) {
                         color = player$outcome)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
-        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Outcome", sep = " ")) +
         labs(color = "Pitch Outcome") +
         theme_minimal() + geom_path(aes(x, y), data = kZone)
     graph
 }
+```
 
+#### Patrick Corbin
+
+```{r}
 corbin.heatmap.out = graph.pitch.heatmap.out(corbin)
 corbin.heatmap.out
+```
 
+#### Marcus Stroman
+
+```{r}
 stroman.heatmap.out = graph.pitch.heatmap.out(stroman)
 stroman.heatmap.out
+```
 
+#### Noah Syndergaard
+
+```{r}
 syndergaard.heatmap.out = graph.pitch.heatmap.out(syndergaard)
 syndergaard.heatmap.out
+```
 
+#### Blake Treinen
+
+```{r}
 treinen.heatmap.out = graph.pitch.heatmap.out(treinen)
 treinen.heatmap.out
+```
 
+#### Felipe Vazquez
+
+```{r}
 vazquez.heatmap.out = graph.pitch.heatmap.out(vazquez)
 vazquez.heatmap.out
+```
 
+#### Justin Verlander
+
+```{r}
 verlander.heatmap.out = graph.pitch.heatmap.out(verlander)
 verlander.heatmap.out
 ```
 
-### Pitch Location via Pitch Type
+### Location via Type {.tabset .tabset-fade}
 
 Let's look at pitch location via pitch type.
 
@@ -173,32 +199,56 @@ graph.pitch.heatmap.type = function(player) {
                         color = player$pitch)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
-        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Type", sep = " ")) +
         labs(color = "Pitch Type") +
         theme_minimal() + geom_path(aes(x, y), data = kZone)
     graph
 }
+```
 
+#### Patrick Corbin
+
+```{r}
 corbin.heatmap.type = graph.pitch.heatmap.type(corbin)
 corbin.heatmap.type
+```
 
+#### Marcus Stroman
+
+```{r}
 stroman.heatmap.type = graph.pitch.heatmap.type(stroman)
 stroman.heatmap.type
+```
 
+#### Noah Syndergaard
+
+```{r}
 syndergaard.heatmap.type = graph.pitch.heatmap.type(syndergaard)
 syndergaard.heatmap.type
+```
 
+#### Blake Treinen
+
+```{r}
 treinen.heatmap.type = graph.pitch.heatmap.type(treinen)
 treinen.heatmap.type
+```
 
+#### Felipe Vazquez
+
+```{r}
 vazquez.heatmap.type = graph.pitch.heatmap.type(vazquez)
 vazquez.heatmap.type
+```
 
+#### Justin Verlander
+
+```{r}
 verlander.heatmap.type = graph.pitch.heatmap.type(verlander)
 verlander.heatmap.type
 ```
 
-### Pitch Location via Velocity
+### Location via Velocity {.tabset .tabset-fade}
 
 Let's look at pitch location via velocity.
 
@@ -210,33 +260,57 @@ graph.pitch.heatmap.velo = function(player) {
                         color = player$velo)) +
         xlab("Horizontal Position") +
         ylab("Vertical Position") +
-        ggtitle(paste(player$name[1], "Heatmap", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Velocity", sep = " ")) +
         labs(color = "Velocity") +
         scale_color_gradient(low = "blue", high = "red") +
         theme_minimal() + geom_path(aes(x, y), data = kZone)
     graph
 }
+```
 
+#### Patrick Corbin
+
+```{r}
 corbin.heatmap.velo = graph.pitch.heatmap.velo(corbin)
 corbin.heatmap.velo
+```
 
+#### Marcus Stroman
+
+```{r}
 stroman.heatmap.velo = graph.pitch.heatmap.velo(stroman)
 stroman.heatmap.velo
+```
 
+#### Noah Syndergaard
+
+```{r}
 syndergaard.heatmap.velo = graph.pitch.heatmap.velo(syndergaard)
 syndergaard.heatmap.velo
+```
 
+#### Blake Treinen
+
+```{r}
 treinen.heatmap.velo = graph.pitch.heatmap.velo(treinen)
 treinen.heatmap.velo
+```
 
+#### Felipe Vazquez
+
+```{r}
 vazquez.heatmap.velo = graph.pitch.heatmap.velo(vazquez)
 vazquez.heatmap.velo
+```
 
+#### Justin Verlander
+
+```{r}
 verlander.heatmap.velo = graph.pitch.heatmap.velo(verlander)
 verlander.heatmap.velo
 ```
 
-### Pitch Movement {.tabset .tabset-fade}
+### Movement {.tabset .tabset-fade}
 
 To view the movement, let's just determine the average movement for each type of pitch that each player has. First let's make a few helpful functions for us.
 
@@ -249,7 +323,7 @@ graph.pitch.xmovement = function(player) {
         coord_flip() +
         labs(color = "Pitch Type") +
         xlab("Pitch Type") + ylab("Horizontal Movement") +
-        ggtitle(paste(player$name[1], "Horizontal Movement", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Horizontal Movement", sep = " ")) +
         theme_minimal()
 }
 
@@ -260,7 +334,7 @@ graph.pitch.ymovement = function(player) {
                          color = player$pitch)) +
         labs(color = "Pitch Type") +
         xlab("Pitch Type") + ylab("Vertical Movement") +
-        ggtitle(paste(player$name[1], "Vertical Movement", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Vertical Movement", sep = " ")) +
         theme_minimal()
 }
 ```
@@ -319,7 +393,7 @@ verlander.xmove
 verlander.ymove
 ```
 
-### Pitch Velocity
+### Velocity {.tabset .tabset-fade}
 
 We need to separate each pitch first by type. Then we can see how the pitch's velocity changed over time.
 
@@ -330,30 +404,56 @@ graph.pitch.velo = function(player) {
                       y = player$velo,
                       color = player$pitch)) +
         xlab("Pitches Thrown") + ylab("Velocity") + labs(color = "Pitch Type") +
-        ggtitle(paste(player$name[1], "Pitch Velocity Chart", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Velocity Chart", sep = " ")) +
         theme_minimal()
 }
+```
 
+#### Patrick Corbin
+
+```{r}
 corbin.velo = graph.pitch.velo(corbin)
 corbin.velo
+```
 
+#### Marcus Stroman
+
+```{r}
 stroman.velo = graph.pitch.velo(stroman)
 stroman.velo
+```
 
+#### Noah Syndergaard
+
+```{r}
 syndergaard.velo = graph.pitch.velo(syndergaard)
 syndergaard.velo
+```
 
+#### Blake Treinen
+
+```{r}
 treinen.velo = graph.pitch.velo(treinen)
 treinen.velo
+```
 
+#### Felipe Vazquez
+
+```{r}
 vazquez.velo = graph.pitch.velo(vazquez)
 vazquez.velo
+```
 
+#### Justin Verlander
+
+```{r}
 verlander.velo = graph.pitch.velo(verlander)
 verlander.velo
 ```
 
-### Pitch Spin Rate
+### Spin Rate {.tabset .tabset-fade}
+
+Let's create our graping function.
 
 ```{r pitch_spin}
 graph.pitch.spin = function(player) {
@@ -363,113 +463,310 @@ graph.pitch.spin = function(player) {
                       color = player$pitch),
                   direction = "vh") +
         xlab("Pitches Thrown") + ylab("Spin Rate") + labs(color = "Pitch Type") +
-        ggtitle(paste(player$name[1], "Pitch Spin Rate Chart", sep = " ")) +
+        ggtitle(paste(player$name[1], player$year[1], "Spin Rate Chart", sep = " ")) +
         theme_minimal()
 }
+```
 
+#### Patrick Corbin
+
+```{r}
 corbin.spin = graph.pitch.spin(corbin)
 corbin.spin
+```
 
+#### Marcus Stroman
+
+```{r}
 stroman.spin = graph.pitch.spin(stroman)
 stroman.spin
+```
 
+#### Noah Syndergaard
+
+```{r}
 syndergaard.spin = graph.pitch.spin(syndergaard)
 syndergaard.spin
+```
 
+#### Blake Treinen
+
+```{r}
 treinen.spin = graph.pitch.spin(treinen)
 treinen.spin
+```
 
+#### Felipe Vazquez
+
+```{r}
 vazquez.spin = graph.pitch.spin(vazquez)
 vazquez.spin
+```
 
+#### Justin Verlander
+
+```{r}
 verlander.spin = graph.pitch.spin(verlander)
 verlander.spin
 ```
 
-## Analysis {.tabset .tabset-fade}
+# Analysis {.tabset .tabset-fade}
 
 I'll be looking at a few specific Pittsburgh Pirates pitchers and looking at them from year to year.
 
-### Jameson Taillon
+## Jameson Taillon {.tabset .tabset-fade}
+
+### Data Acquisition
 
 Let's first read in our data for Taillon.
 
 ```{r}
-taillon.data = scrape.data("2018-01-01", 592791)
-taillon = filter.data(taillon.data)
+taillon.data.2018 = scrape.data("2018-01-01", 592791)
+taillon.data.2019 = scrape.data("2019-01-01", 592791)
+taillon.2018 = filter.data(taillon.data.2018)
+taillon.2019 = filter.data(taillon.data.2019)
 ```
 
-Now, let's just get some averages of Taillon's pitches.
+### 2018
+
+Now, let's just get some averages of Taillon's pitches for 2018.
 
 ```{r}
-taillon.ff = taillon[taillon$pitch == "FF",]
-taillon.ft = taillon[taillon$pitch == "FT",]
-taillon.sl = taillon[taillon$pitch == "SL",]
-taillon.cu = taillon[taillon$pitch == "CU",]
-taillon.ch = taillon[taillon$pitch == "CH",]
+taillon.ff.2018 = taillon.2018[taillon.2018$pitch == "FF",]
+taillon.ft.2018 = taillon.2018[taillon.2018$pitch == "FT",]
+taillon.sl.2018 = taillon.2018[taillon.2018$pitch == "SL",]
+taillon.cu.2018 = taillon.2018[taillon.2018$pitch == "CU",]
+taillon.ch.2018 = taillon.2018[taillon.2018$pitch == "CH",]
 
-taillon.ff = taillon.ff[complete.cases(taillon.ff),]
-taillon.ft = taillon.ff[complete.cases(taillon.ft),]
-taillon.sl = taillon.ff[complete.cases(taillon.sl),]
-taillon.cu = taillon.ff[complete.cases(taillon.cu),]
-taillon.ch = taillon.ff[complete.cases(taillon.ch),]
+taillon.ff.2018 = taillon.ff.2018[complete.cases(taillon.ff.2018),]
+taillon.ft.2018 = taillon.ft.2018[complete.cases(taillon.ft.2018),]
+taillon.sl.2018 = taillon.sl.2018[complete.cases(taillon.sl.2018),]
+taillon.cu.2018 = taillon.cu.2018[complete.cases(taillon.cu.2018),]
+taillon.ch.2018 = taillon.ch.2018[complete.cases(taillon.ch.2018),]
 ```
 
-| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate |
-| ----- | ---------------- | ------------------ | ----------------- |
-| 4-Seam Fastball | `r mean(taillon.ff$velo)` | `r sd(taillon.ff$velo)` | `r mean(taillon.ff$spin)` |
-| 2-Seam Fastball | `r mean(taillon.ft$velo)` | `r sd(taillon.ft$velo)` | `r mean(taillon.ft$spin)` |
-| Slider | `r mean(taillon.ft$velo)` | `r sd(taillon.sl$velo)` | `r mean(taillon.sl$spin)` |
-| Curveball | `r mean(taillon.cu$velo)` | `r sd(taillon.cu$velo)` | `r mean(taillon.cu$spin)` |
-| Changeup | `r mean(taillon.ch$velo)` | `r sd(taillon.ch$velo)` | `r mean(taillon.ch$spin)` |
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(taillon.ff.2018$velo)` | `r sd(taillon.ff.2018$velo)` | `r mean(taillon.ff.2018$spin)` | `r sd(taillon.ff.2018$spin)` |
+| 2-Seam Fastball | `r mean(taillon.ft.2018$velo)` | `r sd(taillon.ft.2018$velo)` | `r mean(taillon.ft.2018$spin)` | `r sd(taillon.ft.2018$spin)` |
+| Slider | `r mean(taillon.sl.2018$velo)` | `r sd(taillon.sl.2018$velo)` | `r mean(taillon.sl.2018$spin)` | `r sd(taillon.sl.2018$spin)` |
+| Curveball | `r mean(taillon.cu.2018$velo)` | `r sd(taillon.cu.2018$velo)` | `r mean(taillon.cu.2018$spin)` | `r sd(taillon.cu.2018$spin)` |
+| Changeup | `r mean(taillon.ch.2018$velo)` | `r sd(taillon.ch.2018$velo)` | `r mean(taillon.ch.2018$spin)` | `r sd(taillon.ch.2018$spin)` |
 
 Now let's make some graphs.
 
 ```{r}
-taillon.heatmap.out = graph.pitch.heatmap.out(taillon)
-taillon.heatmap.out
+taillon.heatmap.out.2018 = graph.pitch.heatmap.out(taillon.2018)
+taillon.heatmap.out.2018
 
-taillon.heatmap.type = graph.pitch.heatmap.type(taillon)
-taillon.heatmap.type
+taillon.heatmap.type.2018 = graph.pitch.heatmap.type(taillon.2018)
+taillon.heatmap.type.2018
 
-taillon.heatmap.velo = graph.pitch.heatmap.velo(taillon)
-taillon.heatmap.velo
+taillon.heatmap.velo.2018 = graph.pitch.heatmap.velo(taillon.2018)
+taillon.heatmap.velo.2018
 
-taillon.spin = graph.pitch.spin(taillon)
-taillon.spin
+taillon.spin.2018 = graph.pitch.spin(taillon.2018)
+taillon.spin.2018
 
-taillon.velo = graph.pitch.velo(taillon)
-taillon.velo
+taillon.velo.2018 = graph.pitch.velo(taillon.2018)
+taillon.velo.2018
 
-taillon.xmove = graph.pitch.xmovement(taillon)
-taillon.xmove
+taillon.xmove.2018 = graph.pitch.xmovement(taillon.2018)
+taillon.xmove.2018
 
-taillon.ymove = graph.pitch.ymovement(taillon)
-taillon.ymove
+taillon.ymove.2018 = graph.pitch.ymovement(taillon.2018)
+taillon.ymove.2018
 ```
 
-### Richard Rodriguez
+What's also important is to determine how many of his pitches were barrelled (strong contact).
+
+```{r}
+count.barrels = function(player) {
+    s = sum(player$contact == 6)
+    s
+}
+
+barrel.probability = function(player) {
+    b = count.barrels(player)
+    t = NROW(player$contact)
+    p = (b * 1.0)/t
+    p
+}
+```
+
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(taillon.2018)` | `r barrel.probability(taillon.2018)` |
+| 4-Seam Fastball | `r count.barrels(taillon.ff.2018)` | `r barrel.probability(taillon.ff.2018)` |
+| 2-Seam Fastball | `r count.barrels(taillon.ft.2018)` | `r barrel.probability(taillon.ft.2018)` |
+| Slider | `r count.barrels(taillon.sl.2018)` | `r barrel.probability(taillon.sl.2018)` |
+| Curveball | `r count.barrels(taillon.cu.2018)` | `r barrel.probability(taillon.cu.2018)` |
+| Changeup | `r count.barrels(taillon.ch.2018)` | `r barrel.probability(taillon.ch.2018)` |
+
+Let's also take a look at his pitch frequencies.
+
+```{r}
+pitch.count = function(player, type) {
+    c = sum(player$pitch == type)
+    c
+}
+
+pitch.frequency = function(player, type) {
+    c = pitch.count(player, type)
+    t = NROW(player$pitch)
+    f = (c * 1.0) / t
+    f
+}
+```
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(taillon.2018, "FF")` | `r pitch.frequency(taillon.2018, "FF")` |
+| 2-Seam Fastball | `r pitch.count(taillon.2018, "FT")` | `r pitch.frequency(taillon.2018, "FT")` |
+| Slider | `r pitch.count(taillon.2018, "SL")` | `r pitch.frequency(taillon.2018, "SL")` |
+| Curveball | `r pitch.count(taillon.2018, "CU")` | `r pitch.frequency(taillon.2018, "CU")` |
+| Changeup | `r pitch.count(taillon.2018, "CH")` | `r pitch.frequency(taillon.2018, "CH")` |
+
+### 2019
+
+Now, let's just get some averages of Taillon's pitches for 2019.
+
+```{r}
+taillon.ff.2019 = taillon.2019[taillon.2019$pitch == "FF",]
+taillon.ft.2019 = taillon.2019[taillon.2019$pitch == "FT",]
+taillon.sl.2019 = taillon.2019[taillon.2019$pitch == "SL",]
+taillon.cu.2019 = taillon.2019[taillon.2019$pitch == "CU",]
+taillon.ch.2019 = taillon.2019[taillon.2019$pitch == "CH",]
+
+taillon.ff.2019 = taillon.ff.2019[complete.cases(taillon.ff.2019),]
+taillon.ft.2019 = taillon.ft.2019[complete.cases(taillon.ft.2019),]
+taillon.sl.2019 = taillon.sl.2019[complete.cases(taillon.sl.2019),]
+taillon.cu.2019 = taillon.cu.2019[complete.cases(taillon.cu.2019),]
+taillon.ch.2019 = taillon.ch.2019[complete.cases(taillon.ch.2019),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(taillon.ff.2019$velo)` | `r sd(taillon.ff.2019$velo)` | `r mean(taillon.ff.2019$spin)` | `r sd(taillon.ff.2019$spin)` |
+| 2-Seam Fastball | `r mean(taillon.ft.2019$velo)` | `r sd(taillon.ft.2019$velo)` | `r mean(taillon.ft.2019$spin)` | `r sd(taillon.ft.2019$spin)` |
+| Slider | `r mean(taillon.sl.2019$velo)` | `r sd(taillon.sl.2019$velo)` | `r mean(taillon.sl.2019$spin)` | `r sd(taillon.sl.2019$spin)` |
+| Curveball | `r mean(taillon.cu.2019$velo)` | `r sd(taillon.cu.2019$velo)` | `r mean(taillon.cu.2019$spin)` | `r sd(taillon.cu.2019$spin)` |
+| Changeup | `r mean(taillon.ch.2019$velo)` | `r sd(taillon.ch.2019$velo)` | `r mean(taillon.ch.2019$spin)` | `r sd(taillon.ch.2019$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+taillon.heatmap.out.2019 = graph.pitch.heatmap.out(taillon.2019)
+taillon.heatmap.out.2019
+
+taillon.heatmap.type.2019 = graph.pitch.heatmap.type(taillon.2019)
+taillon.heatmap.type.2019
+
+taillon.heatmap.velo.2019 = graph.pitch.heatmap.velo(taillon.2019)
+taillon.heatmap.velo.2019
+
+taillon.spin.2019 = graph.pitch.spin(taillon.2019)
+taillon.spin.2019
+
+taillon.velo.2019 = graph.pitch.velo(taillon.2019)
+taillon.velo.2019
+
+taillon.xmove.2019 = graph.pitch.xmovement(taillon.2019)
+taillon.xmove.2019
+
+taillon.ymove.2019 = graph.pitch.ymovement(taillon.2019)
+taillon.ymove.2019
+```
+
+What's also important is to determine how many of his pitches were barrelled (strong contact).
+
+Now let's take a look at his barrel probability for all his pitches.
+
+| Pitch | Number of Barrels | Barrel Probability |
+| ----- | ----------------- | ------------------ |
+| All | `r count.barrels(taillon.2019)` | `r barrel.probability(taillon.2019)` |
+| 4-Seam Fastball | `r count.barrels(taillon.ff.2019)` | `r barrel.probability(taillon.ff.2019)` |
+| 2-Seam Fastball | `r count.barrels(taillon.ft.2019)` | `r barrel.probability(taillon.ft.2019)` |
+| Slider | `r count.barrels(taillon.sl.2019)` | `r barrel.probability(taillon.sl.2019)` |
+| Curveball | `r count.barrels(taillon.cu.2019)` | `r barrel.probability(taillon.cu.2019)` |
+| Changeup | `r count.barrels(taillon.ch.2019)` | `r barrel.probability(taillon.ch.2019)` |
+
+Let's view all his frequencies together in a tabular format.
+
+| Pitch | Pitch Count | Pitch Frequency |
+| ----- | ----------- | --------------- |
+| 4-Seam Fastball | `r pitch.count(taillon.2018, "FF")` | `r pitch.frequency(taillon.2018, "FF")` |
+| 2-Seam Fastball | `r pitch.count(taillon.2018, "FT")` | `r pitch.frequency(taillon.2018, "FT")` |
+| Slider | `r pitch.count(taillon.2018, "SL")` | `r pitch.frequency(taillon.2018, "SL")` |
+| Curveball | `r pitch.count(taillon.2018, "CU")` | `r pitch.frequency(taillon.2018, "CU")` |
+| Changeup | `r pitch.count(taillon.2018, "CH")` | `r pitch.frequency(taillon.2018, "CH")` |
+
+## Richard Rodriguez
 
 ```{r}
 rodriguez.data = scrape.data("2018-01-01", 593144)
 rodriguez = filter.data(rodriguez.data)
 ```
 
-### Joe Musgrove
+Now, let's just get some averages of Rodriguez's pitches.
+
+```{r}
+rodriguez.ff = rodriguez[rodriguez$pitch == "FF",]
+rodriguez.sl = rodriguez[rodriguez$pitch == "SL",]
+
+rodriguez.ff = rodriguez.ff[complete.cases(rodriguez.ff),]
+rodriguez.sl = rodriguez.sl[complete.cases(rodriguez.sl),]
+```
+
+| Pitch | Average Velocity | Standard Deviation of Velocity | Average Spin Rate | Standard Deviation of Spin Rate |
+| ----- | ---------------- | ------------------------------ | ----------------- | --------------------------------|
+| 4-Seam Fastball | `r mean(rodriguez.ff$velo)` | `r sd(rodriguez.ff$velo)` | `r mean(rodriguez.ff$spin)` | `r sd(rodriguez.ff$spin)` |
+| Slider | `r mean(rodriguez.sl$velo)` | `r sd(rodriguez.sl$velo)` | `r mean(rodriguez.sl$spin)` | `r sd(rodriguez.sl$spin)` |
+
+Now let's make some graphs.
+
+```{r}
+rodriguez.heatmap.out = graph.pitch.heatmap.out(rodriguez)
+rodriguez.heatmap.out
+
+rodriguez.heatmap.type = graph.pitch.heatmap.type(rodriguez)
+rodriguez.heatmap.type
+
+rodriguez.heatmap.velo = graph.pitch.heatmap.velo(rodriguez)
+rodriguez.heatmap.velo
+
+rodriguez.spin = graph.pitch.spin(rodriguez)
+rodriguez.spin
+
+rodriguez.velo = graph.pitch.velo(rodriguez)
+rodriguez.velo
+
+rodriguez.xmove = graph.pitch.xmovement(rodriguez)
+rodriguez.xmove
+
+rodriguez.ymove = graph.pitch.ymovement(rodriguez)
+rodriguez.ymove
+```
+
+## Joe Musgrove
 
 ```{r}
 musgrove.data = scrape.data("2018-01-01", 605397)
 musgrove = filter.data(musgrove.data)
 ```
 
-### Jordan Lyles
+## Jordan Lyles
 
 ```{r}
 lyles.data = scrape.data("2018-01-01", 543475)
 lyles = filter.data(lyles.data)
 ```
 
-### Kyle Crick
+## Kyle Crick
 
 ```{r}
 crick.data = scrape.data("2018-01-01", 605195)
